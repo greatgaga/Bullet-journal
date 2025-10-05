@@ -4,5 +4,7 @@
     "JSONS_PATH": "/home/kali/bullet_journal/Bullet-journal/data",
     "JSON_TASKS_PATH": "/home/kali/bullet_journal/Bullet-journal/data/tasks.json",
     "JSONS_CONFIG_PATH": "/home/kali/bullet_journal/Bullet-journal/data/config.json",
-    "TASK_NUM": 0
+    "JSON_REPETITIVE_TASKS_PATH": "/home/kali/bullet_journal/Bullet-journal/data/repetitive_tasks.json",
+    "TASK_NUM": 0,
+    "REPETITIVE_TASK_NUM": 0
 }

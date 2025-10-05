@@ -1,6 +1,8 @@
 import json
-from config import WELCOME_TEXT_PATH, JSON_TASKS_PATH, JSONS_CONFIG_PATH
+from config import *
 from datetime import *
+
+# Helper funcs
 
 def set_task_num(new_num):
     with JSONS_CONFIG_PATH.open('r') as config_file:
@@ -15,6 +17,22 @@ def get_task_num():
     with JSONS_CONFIG_PATH.open('r') as f:
         config = json.load(f)
     return config.get("TASK_NUM", 0)
+
+def set_repetitive_task(new_num):
+    with JSONS_CONFIG_PATH.open('r') as config_file:
+        config_data = json.load(config_file)
+    
+    config_data["REPETITIVE_TASK_NUM"] = new_num
+
+    with JSONS_CONFIG_PATH.open('w') as config_file:
+        json.dump(config_data, config_file, indent=4)
+
+def get_repetitive_task():
+    with JSONS_CONFIG_PATH.open('r') as f:
+        config = json.load(f)
+    return config.get("REPETITIVE_TASK_NUM", 0)
+
+# Features
 
 def add_task():
     try:
@@ -180,4 +198,35 @@ def configure_repetitive_task():
         print()
         return
 
-    
+    # Changing repetitive tasks data
+
+    with JSON_REPETITIVE_TASKS_PATH.open('r') as tasks:
+        repetitive_tasks_data = json.load(tasks)
+
+    repetitive_tasks_num = get_repetitive_task()
+
+    repetitive_tasks_data[repetitive_tasks_num] = {"text": text, "cycle": num_days}
+
+    # Create a temporary file to write the updated data
+    temp_path = JSON_REPETITIVE_TASKS_PATH.with_suffix('.tmp')
+
+    try:
+        with temp_path.open('w') as temp_file:
+            json.dump(repetitive_tasks_data, temp_file, indent=4)
+            temp_file.close()
+    except Exception as e:
+        print(f"An error occurred while writing to the temporary file: {e}")
+        return
+
+    # Replace the original file with the temporary file
+    try:
+        temp_path.replace(JSON_REPETITIVE_TASKS_PATH)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
+    set_repetitive_task(repetitive_tasks_num + 1)
+
+    print('Repetitive task added successfully!')

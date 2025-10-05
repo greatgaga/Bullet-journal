@@ -13,6 +13,7 @@ WELCOME_TEXT_PATH = Path(config["WELCOME_TEXT_PATH"])
 JSONS_PATH = Path(config["JSONS_PATH"])
 JSONS_CONFIG_PATH = Path(config["JSONS_CONFIG_PATH"])
 JSON_TASKS_PATH = Path(config["JSON_TASKS_PATH"])
+JSON_REPETITIVE_TASKS_PATH = Path(config["JSON_REPETITIVE_TASKS_PATH"])
 
 # Checking if number of tasks changed from last login
 
@@ -31,6 +32,27 @@ if TASK_NUM != task_num_actuall:
         config_data = json.load(config_file)
     
     config_data["TASK_NUM"] = task_num_actuall
+
+    with JSONS_CONFIG_PATH.open('w') as config_file:
+        json.dump(config_data, config_file, indent=4)
+
+# Checking if number of repetitive tasks have changed from last login
+
+REPETITIVE_TASK_NUM = config["REPETITIVE_TASK_NUM"]
+
+with JSON_REPETITIVE_TASKS_PATH.open('r') as tasks:
+    tasks_data = json.load(tasks)
+    tasks.close()
+
+task_num_actuall = len(tasks_data)
+
+if REPETITIVE_TASK_NUM != task_num_actuall:
+    REPETITIVE_TASK_NUM = task_num_actuall
+
+    with JSONS_CONFIG_PATH.open('r') as config_file:
+        config_data = json.load(config_file)
+    
+    config_data["REPETITIVE_TASK_NUM"] = task_num_actuall
 
     with JSONS_CONFIG_PATH.open('w') as config_file:
         json.dump(config_data, config_file, indent=4)
