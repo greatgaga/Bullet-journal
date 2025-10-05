@@ -1,0 +1,8 @@
+{
+    "PROMPT_TEXTS_PATH": "/home/kali/bullet_journal/Bullet-journal/src/prompt_look",
+    "WELCOME_TEXT_PATH": "/home/kali/bullet_journal/Bullet-journal/src/prompt_look/welcome.txt",
+    "JSONS_PATH": "/home/kali/bullet_journal/Bullet-journal/data",
+    "JSON_TASKS_PATH": "/home/kali/bullet_journal/Bullet-journal/data/tasks.json",
+    "JSONS_CONFIG_PATH": "/home/kali/bullet_journal/Bullet-journal/data/config.json",
+    "TASK_NUM": 0
+}
