@@ -4,5 +4,7 @@ Options:
     2) Remove task
     3) Sync with server
     4) Configure repetitive task
-    5) Display repetitive tasks
-    6) Display task for today
+    5) Display next n days
+    6) Display tasks for today
+
+(Use help to display even more options)

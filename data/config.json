@@ -1,10 +1,12 @@
 {
     "PROMPT_TEXTS_PATH": "/home/kali/bullet_journal/Bullet-journal/src/prompt_look",
     "WELCOME_TEXT_PATH": "/home/kali/bullet_journal/Bullet-journal/src/prompt_look/welcome.txt",
+    "HELP_TEXT_PATH": "/home/kali/bullet_journal/Bullet-journal/src/prompt_look/help.txt",
     "JSONS_PATH": "/home/kali/bullet_journal/Bullet-journal/data",
     "JSON_TASKS_PATH": "/home/kali/bullet_journal/Bullet-journal/data/tasks.json",
     "JSONS_CONFIG_PATH": "/home/kali/bullet_journal/Bullet-journal/data/config.json",
     "JSON_REPETITIVE_TASKS_PATH": "/home/kali/bullet_journal/Bullet-journal/data/repetitive_tasks.json",
     "TASK_NUM": 0,
-    "REPETITIVE_TASK_NUM": 0
+    "REPETITIVE_TASK_NUM": 0,
+    "LAST_DATE": "06-10-2025"
 }

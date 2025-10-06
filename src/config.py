@@ -1,6 +1,7 @@
 from pathlib import Path
 from funcs import *
 import json
+from datetime import *
 
 # loading configuration from JSON file
 CONFIG_FILE = Path(__file__).parent.parent / "data/config.json"
@@ -10,6 +11,7 @@ with CONFIG_FILE.open("r") as f:
 
 PROMPT_TEXTS_PATH = Path(config["PROMPT_TEXTS_PATH"])
 WELCOME_TEXT_PATH = Path(config["WELCOME_TEXT_PATH"])
+HELP_TEXT_PATH = Path(config["HELP_TEXT_PATH"])
 JSONS_PATH = Path(config["JSONS_PATH"])
 JSONS_CONFIG_PATH = Path(config["JSONS_CONFIG_PATH"])
 JSON_TASKS_PATH = Path(config["JSON_TASKS_PATH"])
@@ -19,22 +21,13 @@ JSON_REPETITIVE_TASKS_PATH = Path(config["JSON_REPETITIVE_TASKS_PATH"])
 
 TASK_NUM = config["TASK_NUM"]
 
-with JSON_TASKS_PATH.open('r') as tasks:
-    tasks_data = json.load(tasks)
-    tasks.close()
+with JSONS_CONFIG_PATH.open('r') as config_file:
+    config_data = json.load(config_file)
 
-task_num_actuall = len(tasks_data)
+config_data["TASK_NUM"] = 0
 
-if TASK_NUM != task_num_actuall:
-    TASK_NUM = task_num_actuall
-
-    with JSONS_CONFIG_PATH.open('r') as config_file:
-        config_data = json.load(config_file)
-    
-    config_data["TASK_NUM"] = task_num_actuall
-
-    with JSONS_CONFIG_PATH.open('w') as config_file:
-        json.dump(config_data, config_file, indent=4)
+with JSONS_CONFIG_PATH.open('w') as config_file:
+    json.dump(config_data, config_file, indent=4)
 
 # Checking if number of repetitive tasks have changed from last login
 
@@ -56,3 +49,17 @@ if REPETITIVE_TASK_NUM != task_num_actuall:
 
     with JSONS_CONFIG_PATH.open('w') as config_file:
         json.dump(config_data, config_file, indent=4)
+
+# Fixing date from last login
+
+with JSONS_CONFIG_PATH.open('r') as tasks:
+    date_data = json.load(tasks)
+    tasks.close()
+
+date_data["LAST_DATE"] = datetime.today().strftime("%d-%m-%Y")
+
+with JSONS_CONFIG_PATH.open('w') as tasks:
+    json.dump(date_data, tasks, indent=4)
+    tasks.close()
+
+LAST_DATE = date_data["LAST_DATE"]
