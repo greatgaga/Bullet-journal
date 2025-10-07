@@ -58,8 +58,61 @@ def configure_tasks(cycle, text):
         json.dump(tasks_data, tasks, indent=4)
         tasks.close()
 
-#def fix_tasks(index):
+def fix_tasks(index):
+    # Getting detials about this task for begginng
+    with JSON_TASKS_PATH.open('r') as tasks:
+        tasks_data = json.load(tasks)
 
+    with JSON_REPETITIVE_TASKS_PATH.open('r') as tasks:
+        repetitive_tasks_data = json.load(tasks)
+
+    details = repetitive_tasks_data[str(index)]
+
+    counter = 0
+
+    # Remove tasks from tasks_data that match the repetitive task's text
+    for date_key in tasks_data:
+        remove_indices = []
+        for idx, task in tasks_data[date_key].items():
+            if task.get('text') == details['text']:
+                remove_indices.append(idx)
+        for idx in remove_indices:
+            tasks_data[date_key].pop(idx)
+            set_task_num(get_task_num() - 1)
+
+    # Fixing indexing in dict
+
+    copy = {}
+
+    for date_key in tasks_data:
+        copy[date_key] = {}
+        for key in sorted(tasks_data[date_key].keys(), key=lambda x: int(x)):
+            copy[date_key][counter] = tasks_data[date_key][key]
+            counter += 1
+
+    tasks_data = copy
+
+    # Create a temporary file to write the updated data
+    temp_path = JSON_TASKS_PATH.with_suffix('.tmp')
+
+    try:
+        with temp_path.open('w') as temp_file:
+            json.dump(tasks_data, temp_file, indent=4)
+            temp_file.close()
+    except Exception as e:
+        print(f"An error occurred while writing to the temporary file: {e}")
+        return
+
+    # Replace the original file with the temporary file
+    try:
+        temp_path.replace(JSON_TASKS_PATH)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
+    print('Repetitive task removed successfully!')
 
 # Features
 
@@ -145,7 +198,7 @@ def remove_task():
     copy = {}
 
     for key in tasks_data[real_key]:
-        delta = tasks_data[key]
+        delta = tasks_data[real_key][key]
         copy[counter] = delta
 
         counter += 1
@@ -359,6 +412,10 @@ def remove_repetitive_task():
     with JSON_REPETITIVE_TASKS_PATH.open('r') as tasks:
         tasks_data = json.load(tasks)
 
+    # Changing tasks.json
+
+    fix_tasks(index)
+
     # Removing
 
     counter = 0
@@ -400,14 +457,6 @@ def remove_repetitive_task():
 
     tasks_num = get_repetitive_task()
     set_repetitive_task(tasks_num - 1)
-
-    tasks_num = get_task_num()
-
-    if tasks_num % details["cycle"] == 0:
-        set_task_num(tasks_num - 30 // details["cycle"])
-
-    else: 
-        set_task_num(tasks_num - 30 // details["cycle"])
 
     print("Succesfuly removed task!")
 
