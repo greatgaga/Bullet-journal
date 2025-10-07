@@ -10,7 +10,6 @@ if __name__ == '__main__':
     file.close()
 
     # Configuring tasks.json for future
-    """
 
     tasks_data = {}
 
@@ -39,7 +38,6 @@ if __name__ == '__main__':
         text = tasks_data[key]['text']
 
         configure_tasks(repeat_num, text)
-    """
 
     # Should start a python script that will check if date changed every 3 hours (start in background, so it runs constantly)
 
