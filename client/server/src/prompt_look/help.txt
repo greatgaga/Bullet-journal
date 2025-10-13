@@ -1,9 +1,0 @@
-Options:
-    1) Add task
-    2) Remove task
-    3) Sync with server
-    4) Configure repetitive task
-    5) Display next n days
-    6) Display tasks for today
-    7) Remove repetitive task
-    8) Display all repetitive tasks

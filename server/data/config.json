@@ -6,7 +6,7 @@
     "JSON_TASKS_PATH": "./Bullet-journal/server/data/tasks.json",
     "JSONS_CONFIG_PATH": "./Bullet-journal/server/data/config.json",
     "JSON_REPETITIVE_TASKS_PATH": "./Bullet-journal/server/data/repetitive_tasks.json",
-    "TASK_NUM": 0,
+    "TASK_NUM": 15,
     "REPETITIVE_TASK_NUM": 0,
-    "LAST_DATE": "09-10-2025"
+    "LAST_DATE": "11-10-2025"
 }
