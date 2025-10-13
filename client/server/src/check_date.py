@@ -1,1 +1,0 @@
-# This should check if date changed, and if it changed then it should change date in config.json and also it should adjust repetitive tasks counter for each repetitive task

@@ -1,0 +1,10 @@
+--- Welcome to the Bullet journal ---
+Options:
+    1) Add task
+    2) Remove task
+    3) Sync with server
+    4) Configure repetitive task
+    5) Display next n days
+    6) Display tasks for today
+
+(Use help to display even more options)
