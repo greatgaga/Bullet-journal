@@ -6,7 +6,7 @@
     "JSON_TASKS_PATH": "data/tasks.json",
     "JSONS_CONFIG_PATH": "data/config.json",
     "JSON_REPETITIVE_TASKS_PATH": "data/repetitive_tasks.json",
-    "TASK_NUM": 0,
+    "TASK_NUM": -11,
     "REPETITIVE_TASK_NUM": 0,
-    "LAST_DATE": "13-10-2025"
+    "LAST_DATE": "15-10-2025"
 }

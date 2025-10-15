@@ -86,10 +86,11 @@ import json
 import datetime
 import sys
 
-# Determine base directory depending on execution context
-if getattr(sys, 'frozen', False):  # Running as bundled .exe
-    BASE_DIR = Path(sys._MEIPASS)
-else:  # Running as .py script
+if getattr(sys, 'frozen', False):
+    # Running as .exe → use folder where .exe is located
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    # Running as .py → go up from src/ to client/
     BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load configuration file
