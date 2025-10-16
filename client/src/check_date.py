@@ -32,8 +32,6 @@ def run_check_date():
 
         tasks_data.pop(list(tasks_data.keys())[0])
 
-        print(tasks_data)
-
         tasks_data[(datetime.date.today() + datetime.timedelta(days=30)).strftime("%d-%m-%Y")] = {}
 
         for key, value in rep_tasks_data.items():

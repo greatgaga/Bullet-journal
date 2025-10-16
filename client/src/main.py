@@ -42,8 +42,53 @@ if __name__ == '__main__':
 
         configure_tasks(repeat_num, text)
     """
+    
+    # Checking if everything in config.json is correct
 
-    # Should start a python script that will check if date changed every 3 hours (start in background, so it runs constantly)
+    with JSON_TASKS_PATH.open('r') as tasks:
+        tasks_data = json.load(tasks)
+
+    max_val = -1
+    for month in tasks_data.keys():
+        for day, value in tasks_data[month].items():
+            max_val = max(int(day), max_val)
+
+    if max_val != -1:
+        max_val += 1
+    else:
+        max_val = 0
+
+    with JSON_REPETITIVE_TASKS_PATH.open('r') as rep_tasks:
+        rep_tasks_data = json.load(rep_tasks)
+
+    max_val_rep = len(list(rep_tasks_data.keys()))
+
+    with JSONS_CONFIG_PATH.open('r') as config:
+        config_data = json.load(config)
+
+    config_data["TASK_NUM"] = max_val
+    config_data["REPETITIVE_TASK_NUM"] = max_val_rep
+
+    # Making backup in case something goes wrong while writing to original config file
+    temp_path = JSONS_CONFIG_PATH.with_suffix('.tmp')
+
+    try:
+        with temp_path.open('w') as temp_file:
+            json.dump(config_data, temp_file, indent=4)
+            temp_file.close()
+    except Exception as e:
+        print(f"An error occurred while writing to the temporary file: {e}")
+        exit(1)
+
+    # Replace the original file with the temporary file
+    try:
+        temp_path.replace(JSONS_CONFIG_PATH)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
     run_check_date()
 
     # Client should connect than after that client gets to leading logic
