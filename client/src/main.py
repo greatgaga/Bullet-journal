@@ -95,25 +95,56 @@ if __name__ == '__main__':
 
     command = ''
 
-    while command != "exit":
-        print('>> ', end='')
+    try:
+        while command != "exit":
+            print('>> ', end='')
 
-        command = input()
+            command = input()
 
-        if command == '1':
-            add_task()
-        elif command == '2':
-            remove_task()
-        elif command == '6':
-            display_tasks_for_today()
-        elif command == '4':
-            configure_repetitive_task()
-        elif command == '5':
-            display_schedule_for_next_days()
-        elif command == 'help':
-            file = HELP_TEXT_PATH.open('r')
-            print(file.read())
-        elif command == '7':
-            remove_repetitive_task()
-        elif command == '8':
-            display_repetitive_tasks()
+            if command == '1':
+                add_task()
+            elif command == '2':
+                remove_task()
+            elif command == '6':
+                display_tasks_for_today()
+            elif command == '4':
+                configure_repetitive_task()
+            elif command == '5':
+                display_schedule_for_next_days()
+            elif command == 'help':
+                file = HELP_TEXT_PATH.open('r')
+                print(file.read())
+            elif command == '7':
+                remove_repetitive_task()
+            elif command == '8':
+                display_repetitive_tasks()
+
+            with JSON_TASKS_PATH.open('r') as tasks:
+                tasks_data = json.load(tasks)
+                tasks.close()
+
+            # Fixing indexes
+            tasks_data = fix_indexes(tasks_data)
+
+            # Create a temporary file to write the updated data
+            temp_path = JSON_TASKS_PATH.with_suffix('.tmp')
+
+            try:
+                with temp_path.open('w') as temp_file:
+                    json.dump(tasks_data, temp_file, indent=4)
+                    temp_file.close()
+            except Exception as e:
+                print(f"An error occurred while writing to the temporary file: {e}")
+                exit(1)
+
+            # Replace the original file with the temporary file
+            try:
+                temp_path.replace(JSON_TASKS_PATH)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            finally:
+                if temp_path.exists():
+                    temp_path.unlink()
+    except KeyboardInterrupt:
+        print("\nLeaving...")
+        exit

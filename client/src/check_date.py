@@ -10,12 +10,14 @@ def run_check_date():
     with JSONS_CONFIG_PATH.open("r") as config:
         config_data = json.load(config)
 
-    prev_date = config_data["LAST_DATE"]
+    fmt = "%d-%m-%Y"
+
+    prev_date = datetime.datetime.strptime(config_data["LAST_DATE"], fmt)
 
     current_time = datetime.date.today().strftime("%d-%m-%Y")
         
     if prev_date != current_time:
-        current_time = datetime.date.today().day
+        current_time = datetime.date.today()
 
         # Adjust tasks.json
 
@@ -25,25 +27,42 @@ def run_check_date():
         with JSON_REPETITIVE_TASKS_PATH.open("r") as rep_tasks:
             rep_tasks_data = json.load(rep_tasks)
 
-        # Removing all the tasks that were last day
-        task_num = get_task_num()
+        # Adding needed number of days to tasks_data
+        last_date = list(tasks_data.items())
 
-        set_task_num(task_num - len(tasks_data[list(tasks_data.keys())[0]]))
+        last_date = datetime.datetime.strptime(last_date[-1][0], fmt)
 
-        tasks_data.pop(list(tasks_data.keys())[0])
+        target_date = (current_time + datetime.timedelta(days=30))
 
-        tasks_data[(datetime.date.today() + datetime.timedelta(days=30)).strftime("%d-%m-%Y")] = {}
+        delta = target_date - last_date.date()
 
-        for key, value in rep_tasks_data.items():
-            if 30 % value["cycle"] == 0:
-                task_num = get_task_num()
+        #print(delta)
 
-                tasks_data[(datetime.date.today() + datetime.timedelta(days=30)).strftime("%d-%m-%Y")][task_num] = {"text": value["text"], "status": "incomplete"}
+        for i in range(1, delta.days + 1):
+            date = (last_date + datetime.timedelta(days=i)).date().strftime("%d-%m-%Y")
 
-                set_task_num(task_num + 1)
+            print(date)
 
-        # Fixing indexes of tasks_data
-        tasks_data = fix_indexes(tasks_data)
+            tasks_data[date] = {}
+
+        #print(tasks_data)
+
+        # Adding repetitive tasks to tasks_datas new days
+        for key, value in tasks_data.items():
+            if datetime.datetime.strptime(key, "%d-%m-%Y").date() >= last_date.date():
+                for key_rep, value_rep in rep_tasks_data.items():
+                    start_date = value_rep["start_date"]
+                    cycle = value_rep["cycle"]
+
+                    if ((datetime.datetime.strptime(key, "%d-%m-%Y").date() - datetime.datetime.strptime(start_date, "%d-%m-%Y").date()).days > 0):
+                        if (datetime.datetime.strptime(key, "%d-%m-%Y").date() - datetime.datetime.strptime(start_date, "%d-%m-%Y").date()).days % cycle == 0:
+                            task_num = get_task_num()
+                            tasks_data[key][task_num]["text"] = value["text"]
+                            tasks_data[key][task_num]["status"] = "incomplete"
+
+                            set_task_num(task_num + 1)
+
+        # Removing old dates
 
         # Create a temporary file to write the updated data
         temp_path = JSON_TASKS_PATH.with_suffix('.tmp')
