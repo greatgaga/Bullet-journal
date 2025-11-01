@@ -32,7 +32,7 @@ def get_repetitive_task():
         config = json.load(f)
     return config.get("REPETITIVE_TASK_NUM")
 
-def configure_tasks(cycle, text):
+def configure_tasks(cycle, text, start_cycle):
     with JSON_TASKS_PATH.open('r') as tasks:
         tasks_data = json.load(tasks)
         tasks.close()
@@ -40,19 +40,20 @@ def configure_tasks(cycle, text):
     counter = 0
 
     for key in tasks_data:
-        if counter % cycle == 0 :
-            counter = 0
+        if datetime.datetime.strptime(key, "%d-%m-%Y").date() >= datetime.datetime.strptime(start_cycle, "%d-%m-%Y").date():
+            if counter % cycle == 0:
+                counter = 0
 
-            task_num = get_task_num()
+                task_num = get_task_num()
 
-            tasks_data[key][task_num] = {}
+                tasks_data[key][task_num] = {}
 
-            tasks_data[key][task_num]['text'] = text
-            tasks_data[key][task_num]['status'] = 'incomplete'
+                tasks_data[key][task_num]['text'] = text
+                tasks_data[key][task_num]['status'] = 'incomplete'
 
-            set_task_num(task_num + 1)
+                set_task_num(task_num + 1)
 
-        counter += 1
+            counter += 1
 
     with JSON_TASKS_PATH.open('w') as tasks:
         json.dump(tasks_data, tasks, indent=4)
@@ -307,6 +308,10 @@ def configure_repetitive_task():
         print("Length of cycle for this repetitive task to repeat itself: ", end='')
 
         num_days = int(input())
+
+        print("Date from which that repetitive task starts (eg: 01-02-1234, 12-12-2025): ", end='')
+
+        start_date = input()
     except KeyboardInterrupt:
         print()
         return
@@ -322,7 +327,7 @@ def configure_repetitive_task():
 
     repetitive_tasks_num = get_repetitive_task()
 
-    repetitive_tasks_data[repetitive_tasks_num] = {"text": text, "cycle": num_days}
+    repetitive_tasks_data[repetitive_tasks_num] = {"text": text, "cycle": num_days, "start_date": start_date}
 
     # Create a temporary file to write the updated data
     temp_path = JSON_REPETITIVE_TASKS_PATH.with_suffix('.tmp')
@@ -348,7 +353,7 @@ def configure_repetitive_task():
 
     print('Repetitive task added successfully!')
 
-    configure_tasks(num_days, text)
+    configure_tasks(num_days, text, start_date)
 
     print('Succesfuly configured repetitive task!')
 
